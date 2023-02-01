@@ -1,10 +1,9 @@
+# import the necessary packages
 from flask import Flask, render_template, session, url_for, request
 import numpy as np
 
+# for logging output to console
 import logging
-
-# from flask_wtf import FlaskForm
-# from wtforms import TextField, SubmitField
 
 import tensorflow as tf
 
@@ -18,7 +17,8 @@ init_scaler = joblib.load("Imp Objects/ini_scaler.pkl")
 init_look_back = joblib.load("Imp Objects/look_back.pkl")
 init_scaled_data = joblib.load("Imp Objects/scaled_data.pkl")
 
-
+# this function is used to predict the stock price for the next n days
+# complete description of the function is given in the notebook vedanta_future_pred.ipynb
 def return_predictions(model, scaler, num_days):
 
     n_features = init_scaled_data.shape[1]
@@ -39,21 +39,21 @@ def return_predictions(model, scaler, num_days):
     return true_forecast
 
 
+# basic flask code
+
 app = Flask(__name__, template_folder="Templates")
 
-app.config["SECRET_KEY"] = "mysecretkey"
+# app.config["SECRET_KEY"] = "mysecretkey"
 
-# i have my own form
-# class StockForm(FlaskForm):
-#     n_days = TextField("Number of days: ")
-
-
+# retrn the homepage
 @app.route("/home", methods=["GET", "POST"])
 def home():
     # return "<h1>Flask app is running</h1>"
     return render_template("index.html")
 
 
+# take in number of days from the user through form in the index.html and return the predicted stock price
+# to prediction.html file. and create a dynamic table in the prediction.html file.
 @app.route("/stock_pred", methods=["GET", "POST"])
 def stock_pred():
     if request.method == "GET":
